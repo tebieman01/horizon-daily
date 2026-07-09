@@ -1,0 +1,96 @@
+{
+  "version": "1.0",
+  "ai": {
+    "provider": "deepseek",
+    "model": "deepseek-chat",
+    "base_url": "https://api.deepseek.com",
+    "api_key_env": "DEEPSEEK_API_KEY",
+    "temperature": 0.3,
+    "max_tokens": 2048,
+    "throttle_sec": 1,
+    "languages": ["zh", "en"],
+    "analysis_concurrency": 3,
+    "enrichment_concurrency": 2
+  },
+  "sources": {
+    "hackernews": {
+      "enabled": true,
+      "fetch_top_stories": 15,
+      "min_score": 100
+    },
+    "rss": [
+      {"name": "Nature Biomedical Engineering", "url": "https://www.nature.com/subjects/biomedical-engineering.rss", "enabled": true, "category": "healthcare-ai"},
+      {"name": "Nature - AI & ML", "url": "https://www.nature.com/subjects/machine-learning.rss", "enabled": true, "category": "ai-research"},
+      {"name": "ArXiv - cs.AI", "url": "http://export.arxiv.org/rss/cs.AI", "enabled": true, "category": "ai-research"},
+      {"name": "ArXiv - stat.ML", "url": "http://export.arxiv.org/rss/stat.ML", "enabled": true, "category": "ai-research"},
+      {"name": "ArXiv - q-bio.QM", "url": "http://export.arxiv.org/rss/q-bio.QM", "enabled": true, "category": "healthcare-ai"},
+      {"name": "MIT Tech Review - AI", "url": "https://www.technologyreview.com/topic/artificial-intelligence/feed/", "enabled": true, "category": "ai-tech"},
+      {"name": "Google AI Blog", "url": "https://blog.research.google/atom.xml", "enabled": true, "category": "ai-tech"}
+    ],
+    "reddit": {
+      "enabled": true,
+      "subreddits": [
+        { "subreddit": "MachineLearning", "enabled": true, "sort": "hot", "time_filter": "day", "fetch_limit": 10, "min_score": 50 }
+      ],
+      "users": [],
+      "fetch_comments": 3
+    },
+    "google_news": {
+      "enabled": true,
+      "query": "(医疗AI OR 医疗人工智能 OR 智慧医疗 OR AI healthcare)",
+      "language": "zh",
+      "country": "CN",
+      "ceid": "zh-CN",
+      "max_results": 30,
+      "category": "healthcare-ai"
+    },
+    "gdelt": {
+      "enabled": true,
+      "query": "(AI OR artificial intelligence OR machine learning) AND (healthcare OR medical OR clinical OR drug discovery OR diagnosis)",
+      "mode": "ArtList",
+      "max_records": 20,
+      "language": "English",
+      "country": null,
+      "category": "healthcare-ai"
+    }
+  },
+  "filtering": {
+    "ai_score_threshold": 6.0,
+    "time_window_hours": 24,
+    "max_items": 20,
+    "category_groups": {
+      "healthcare-ai": { "limit": 8, "categories": ["healthcare-ai", "healthcare", "clinical-ai"] },
+      "ai-tech": { "limit": 6, "categories": ["ai-tech", "ai-research", "ai-tools", "llm"] },
+      "industry": { "limit": 4, "categories": ["industry", "github-trending", "business"] }
+    },
+    "default_group": "other",
+    "default_group_limit": 2
+  },
+  "webhook": {
+    "enabled": true,
+    "url_env": "HORIZON_WEBHOOK_URL",
+    "delivery": "summary",
+    "overview_position": "last",
+    "platform": "feishu",
+    "layout": "markdown",
+    "fallback_layout": "markdown",
+    "languages": ["zh"],
+    "request_body": {
+      "msg_type": "interactive",
+      "card": {
+        "schema": "2.0",
+        "config": { "wide_screen_mode": true },
+        "header": {
+          "title": { "tag": "plain_text", "content": "#{message_title}" },
+          "template": "blue"
+        },
+        "body": {
+          "elements": [
+            { "tag": "markdown", "content": "#{summary}" }
+          ]
+        }
+      }
+    },
+    "headers": ""
+  }
+}
